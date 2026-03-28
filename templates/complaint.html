@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UAI | Grievance Logs</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --glass: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --accent: #00d4ff;
+            --warning: #ffaa00;
+            --bg: #050505;
+        }
+
+        body {
+            margin: 0; padding: 40px;
+            background: var(--bg);
+            color: #fff;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header-meta {
+            margin-bottom: 40px;
+            border-left: 3px solid var(--accent);
+            padding-left: 20px;
+        }
+
+        .header-meta h1 {
+            font-size: 2rem;
+            font-weight: 300;
+            margin: 0;
+            letter-spacing: -1px;
+        }
+
+        .header-meta p {
+            color: #555;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            font-size: 0.7rem;
+            margin-top: 5px;
+        }
+
+        /* Tactical List Design */
+        .complaint-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .complaint-item {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 25px;
+            display: grid;
+            grid-template-columns: 180px 1fr 200px;
+            align-items: center;
+            backdrop-filter: blur(15px);
+            transition: 0.3s ease;
+        }
+
+        .complaint-item:hover {
+            border-color: rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        /* Pending State Highlight */
+        .status-pending {
+            border-left: 4px solid var(--warning);
+            box-shadow: -10px 0 20px rgba(255, 170, 0, 0.05);
+        }
+
+        .user-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .user-name { font-weight: 600; font-size: 0.95rem; }
+        .auth-node { color: var(--accent); font-size: 0.75rem; margin-top: 4px; text-transform: uppercase; letter-spacing: 1px; }
+
+        .content-box {
+            padding: 0 30px;
+        }
+
+        .complaint-text { color: #ccc; font-size: 0.9rem; line-height: 1.5; }
+        .timestamp { color: #444; font-size: 0.7rem; margin-top: 8px; display: block; }
+
+        .action-zone {
+            text-align: right;
+        }
+
+        .reply-link {
+            display: inline-block;
+            background: var(--warning);
+            color: #000;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+
+        .reply-link:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(255, 170, 0, 0.3);
+        }
+
+        .resolved-text {
+            color: #555;
+            font-size: 0.85rem;
+            font-style: italic;
+        }
+
+        .badge {
+            font-size: 0.6rem;
+            padding: 3px 8px;
+            border-radius: 5px;
+            text-transform: uppercase;
+            font-weight: bold;
+            margin-bottom: 10px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header-meta">
+            <p>Support Terminal</p>
+            <h1>Grievance Logs</h1>
+        </div>
+
+        <div class="complaint-list">
+            {% for i in data %}
+            <div class="complaint-item {% if i.reply == 'pending' %}status-pending{% endif %}">
+
+                <div class="user-info">
+                    <span class="user-name">{{ i.USER.name }}</span>
+                    <span class="auth-node">Node: {{ i.authority.auth_name }}</span>
+                </div>
+
+                <div class="content-box">
+                    {% if i.reply == 'pending' %}
+                        <span class="badge" style="background: rgba(255, 170, 0, 0.1); color: var(--warning);">Active Grievance</span>
+                    {% else %}
+                        <span class="badge" style="background: rgba(255, 255, 255, 0.05); color: #555;">Resolved</span>
+                    {% endif %}
+
+                    <div class="complaint-text">{{ i.complaint }}</div>
+                    <span class="timestamp">Logged on: {{ i.Date }}</span>
+                </div>
+
+                <div class="action-zone">
+                    {% if i.reply == 'pending' %}
+                        <a href="/myapp/sendreply_get/{{ i.id }}" class="reply-link">TRANSMIT REPLY</a>
+                    {% else %}
+                        <div class="resolved-text">"{{ i.reply }}"</div>
+                    {% endif %}
+                </div>
+
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+</body>
+</html>

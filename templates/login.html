@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UAI | Urban Acoustic Intelligence Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0a0a0a;
+            --accent-blue: #00d4ff;
+            --accent-violet: #9d00ff;
+            --text-gray: #888;
+            --font-main: 'Inter', sans-serif;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            background-color: var(--bg-dark);
+            font-family: var(--font-main);
+            color: white;
+            overflow: hidden;
+        }
+
+        .container {
+            display: flex;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        /* --- HD TACTICAL MAP SECTION (LEFT) --- */
+        .map-section {
+            flex: 1.2;
+            background-color: #05070a;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Tactical Grid Overlay */
+        .map-section::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(0, 212, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 212, 255, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+            mask-image: radial-gradient(circle, black, transparent 80%);
+            pointer-events: none;
+        }
+
+        /* High-Definition Map Image */
+        .world-map-svg {
+            position: absolute;
+            width: 130%;
+            opacity: 0.15;
+            filter: drop-shadow(0 0 10px var(--accent-blue));
+            transform: perspective(1000px) rotateX(10deg);
+            pointer-events: none;
+        }
+
+        /* Pulsing Audio Activity (Heatmaps) */
+        .heatmap-overlay {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, var(--accent-violet) 0%, transparent 70%);
+            filter: blur(40px);
+            opacity: 0.5;
+            mix-blend-mode: screen;
+            animation: pulse 4s infinite alternate;
+        }
+
+        .heatmap-overlay.blue {
+            background: radial-gradient(circle, var(--accent-blue) 0%, transparent 70%);
+            left: 20%;
+            top: 30%;
+        }
+
+        @keyframes pulse {
+            from { transform: scale(1); opacity: 0.4; }
+            to { transform: scale(1.2); opacity: 0.7; }
+        }
+
+        /* Scanning Line */
+        .scan-line {
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent-blue), transparent);
+            top: 0;
+            opacity: 0.3;
+            animation: scan 8s linear infinite;
+        }
+
+        @keyframes scan {
+            0% { top: -10%; }
+            100% { top: 110%; }
+        }
+
+        /* Telemetry HUD */
+        .hud-label {
+            position: absolute;
+            bottom: 40px;
+            left: 40px;
+            font-family: monospace;
+            z-index: 10;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 12px;
+            border-radius: 4px;
+            border-left: 3px solid var(--accent-blue);
+        }
+
+        /* --- LOGIN PANEL (RIGHT) --- */
+        .login-section {
+            width: 450px;
+            background-color: var(--bg-dark);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 0 60px;
+            border-left: 1px solid #222;
+            z-index: 20;
+        }
+
+        .brand-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .brand-header h1 {
+            font-size: 1.4rem;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            font-weight: 300;
+            margin: 0;
+        }
+
+        .input-group {
+            margin-bottom: 35px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--text-gray);
+            margin-bottom: 10px;
+        }
+
+        .input-group input {
+            width: 100%;
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid #333;
+            color: white;
+            padding: 12px 0;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .input-group input:focus {
+            border-bottom-color: var(--accent-blue);
+        }
+
+        /* Slider Authenticator */
+        .slider-container {
+            position: relative;
+            width: 100%;
+            height: 56px;
+            background: rgba(0, 212, 255, 0.05);
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            border-radius: 100px;
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+            margin-top: 20px;
+        }
+
+        .slider-text {
+            width: 100%;
+            text-align: center;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+            color: var(--accent-blue);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .slider-handle {
+            position: absolute;
+            left: 4px;
+            height: 48px;
+            width: 48px;
+            background: var(--accent-blue);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 0 15px rgba(0, 212, 255, 0.4);
+        }
+
+        .forgot-pass {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 0.75rem;
+            color: var(--text-gray);
+            text-decoration: none;
+            letter-spacing: 1px;
+        }
+
+        .forgot-pass:hover { color: white; }
+    </style>
+</head>
+<body>
+<form action="/myapp/login_post/" method="post">
+<div class="container">
+    <div class="map-section">
+        <div class="scan-line"></div>
+        <img src="https://upload.wikimedia.org/wikipedia/commons/8/80/World_map_-_low_resolution.svg" class="world-map-svg" alt="Tactical Map">
+
+        <div class="heatmap-overlay"></div>
+        <div class="heatmap-overlay blue" style="left: 60%; top: 50%;"></div>
+
+        <div class="hud-label">
+            <div style="color: var(--accent-blue); font-size: 0.6rem; letter-spacing: 2px;">SURVEILLANCE STATUS</div>
+            <div style="font-size: 0.9rem; font-weight: bold;">ACTIVE // KERALA_HUB</div>
+        </div>
+    </div>
+
+    <div class="login-section">
+        <div class="brand-header">
+            <h1>Urban Acoustic Intelligence</h1>
+        </div>
+
+        <form onsubmit="return false;">
+            <div class="input-group">
+                <label>Operator Identifier</label>
+                <input type="text" placeholder="ID_ALPHA_77" spellcheck="false" name="username">
+            </div>
+
+            <div class="input-group">
+                <label>Security Cryptokey</label>
+                <input type="password" placeholder="••••••••" name="password">
+            </div>
+            <div >
+<button type="submit" class="uai-submit-btn">
+    <span class="btn-text">INITIALIZE LOGIN</span>
+</button>
+
+<style>
+    /* Ensure you have your font imported in your <head> */
+    /* @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700&display=swap'); */
+
+    .uai-submit-btn {
+        width: 100%;
+        max-width: 300px; /* Adjust based on your form width */
+        padding: 16px 24px;
+        background: #00d4ff; /* Tactical Cyan */
+        color: #050505; /* Deep black text for high contrast */
+        border: 1px solid #00d4ff;
+        border-radius: 14px;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-weight: 700;
+        font-size: 0.9rem;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(0, 212, 255, 0.1);
+    }
+
+    /* Hover Physics & Glow */
+    .uai-submit-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 25px rgba(0, 212, 255, 0.3);
+        background: #1ae0ff; /* Slightly brighter on hover */
+    }
+
+    /* Click/Active State */
+    .uai-submit-btn:active {
+        transform: translateY(1px);
+        box-shadow: 0 5px 10px rgba(0, 212, 255, 0.2);
+    }
+
+    .btn-text {
+        position: relative;
+        z-index: 2;
+    }
+</style>            </div>
+
+{#            <div class="slider-container" id="sliderContainer">#}
+{#                <div class="slider-text">Slide to Authenticate</div>#}
+{#                <div class="slider-handle" id="sliderHandle">#}
+{#                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="3"><path d="M5 12h14M12 5l7 7-7 7"/></svg>#}
+{#                </div>#}
+{#            </div>#}
+
+            <a href="#" class="forgot-pass">Emergency System Override</a>
+        </form>
+    </div>
+</div>
+
+<script>
+    const handle = document.getElementById('sliderHandle');
+    const container = document.getElementById('sliderContainer');
+    let isDragging = false;
+
+    handle.addEventListener('mousedown', () => isDragging = true);
+
+    window.addEventListener('mouseup', () => {
+        if (!isDragging) return;
+        isDragging = false;
+        if (parseInt(handle.style.left) < (container.offsetWidth - 60)) {
+            handle.style.left = '4px';
+            handle.style.transition = '0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28)';
+        }
+    });
+
+    window.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        handle.style.transition = 'none';
+        const rect = container.getBoundingClientRect();
+        let x = e.clientX - rect.left - 24;
+
+        if (x < 4) x = 4;
+        if (x > rect.width - 52) {
+            x = rect.width - 52;
+            handle.style.background = '#00ff88';
+            document.querySelector('.slider-text').innerText = "AUTHORIZED";
+            document.querySelector('.slider-text').style.color = "#00ff88";
+        }
+
+        handle.style.left = x + 'px';
+    });
+</script>
+</form>
+</body>
+</html>

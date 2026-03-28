@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UAI | Feedback Logs</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --glass: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --accent: #00ff95; /* Green for optimization/success */
+            --bg: #050505;
+        }
+
+        body {
+            margin: 0; padding: 40px;
+            background: var(--bg);
+            color: #fff;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .header-meta {
+            margin-bottom: 50px;
+            border-left: 3px solid var(--accent);
+            padding-left: 20px;
+        }
+
+        .header-meta h1 {
+            font-size: 2rem;
+            font-weight: 300;
+            margin: 0;
+            letter-spacing: -1px;
+        }
+
+        .header-meta p {
+            color: #555;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            font-size: 0.7rem;
+            margin-top: 5px;
+        }
+
+        /* Feedback Grid */
+        .feedback-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 25px;
+        }
+
+        .feedback-card {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 25px;
+            backdrop-filter: blur(15px);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: 0.4s ease;
+        }
+
+        .feedback-card:hover {
+            border-color: var(--accent);
+            background: rgba(255, 255, 255, 0.05);
+            transform: translateY(-5px);
+        }
+
+        .card-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+
+        .user-tag {
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: block;
+        }
+
+        .auth-node {
+            color: var(--accent);
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 4px;
+            display: block;
+        }
+
+        .rating-box {
+            background: rgba(0, 255, 149, 0.1);
+            color: var(--accent);
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .feedback-content {
+            color: #ccc;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin-bottom: 25px;
+            font-style: italic;
+        }
+
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid var(--glass-border);
+            padding-top: 15px;
+        }
+
+        .date-stamp {
+            color: #444;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+        }
+
+        /* Visual Rating Bars */
+        .rating-bar {
+            height: 4px;
+            width: 60px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 2px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .rating-fill {
+            position: absolute;
+            height: 100%;
+            background: var(--accent);
+            box-shadow: 0 0 10px var(--accent);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header-meta">
+            <p>System Optimization</p>
+            <h1>User Feedback Logs</h1>
+        </div>
+
+        <div class="feedback-grid">
+            {% for i in data %}
+            <div class="feedback-card">
+                <div class="card-top">
+                    <div>
+                        <span class="user-tag">{{ i.USER.name }}</span>
+                        <span class="auth-node">Target: {{ i.authority.auth_name }}</span>
+                    </div>
+                    <div class="rating-box">
+                        <span>★</span> {{ i.rating }}/5
+                    </div>
+                </div>
+
+                <div class="feedback-content">
+                    "{{ i.feedback }}"
+                </div>
+
+                <div class="card-footer">
+                    <span class="date-stamp">{{ i.date }}</span>
+                    <div class="rating-bar">
+                        <div class="rating-fill" style="width: {{ i.rating|add:i.rating|add:i.rating|add:i.rating|add:i.rating|add:i.rating }}%;"></div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+</body>
+</html>

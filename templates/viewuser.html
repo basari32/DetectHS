@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UAI | User Directory</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --glass: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --accent: #00d4ff;
+            --bg: #050505;
+        }
+
+        body {
+            margin: 0; padding: 40px;
+            background: var(--bg);
+            color: #fff;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            min-height: 100vh;
+        }
+
+        .header {
+            max-width: 1200px;
+            margin: 0 auto 50px auto;
+            border-left: 3px solid var(--accent);
+            padding-left: 20px;
+        }
+
+        .header h1 {
+            font-size: 2.2rem;
+            font-weight: 300;
+            margin: 0;
+            letter-spacing: -1px;
+        }
+
+        .header p {
+            color: #555;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            font-size: 0.7rem;
+            margin-top: 5px;
+        }
+
+        /* Pinterest-style Grid */
+        .user-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .user-card {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 30px;
+            overflow: hidden;
+            backdrop-filter: blur(15px);
+            transition: all 0.4s ease;
+        }
+
+        .user-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--accent);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        }
+
+        .user-photo {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            filter: grayscale(20%);
+            transition: 0.4s;
+        }
+
+        .user-card:hover .user-photo {
+            filter: grayscale(0%);
+        }
+
+        .user-info {
+            padding: 20px;
+        }
+
+        .user-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin: 0 0 10px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .gender-tag {
+            font-size: 0.6rem;
+            background: rgba(0, 212, 255, 0.1);
+            color: var(--accent);
+            padding: 4px 8px;
+            border-radius: 6px;
+            text-transform: uppercase;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 0.8rem;
+        }
+
+        .label { color: #555; text-transform: uppercase; font-size: 0.65rem; letter-spacing: 1px; }
+        .value { color: #ccc; }
+
+        .contact-box {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid var(--glass-border);
+        }
+
+        .email-link {
+            color: var(--accent);
+            text-decoration: none;
+            font-size: 0.75rem;
+            display: block;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <p>Intelligence Database</p>
+        <h1>User Directory</h1>
+    </div>
+
+    <div class="user-grid">
+        {% for i in data %}
+        <div class="user-card">
+            <img src="{{ i.photo.url }}" class="user-photo" alt="User Profile">
+
+            <div class="user-info">
+                <div class="user-name">
+                    {{ i.name }}
+                    <span class="gender-tag">{{ i.Gender }}</span>
+                </div>
+
+                <div class="detail-row">
+                    <span class="label">Date of Birth</span>
+                    <span class="value">{{ i.dob }}</span>
+                </div>
+
+                <div class="detail-row">
+                    <span class="label">Comms</span>
+                    <span class="value">{{ i.phone }}</span>
+                </div>
+
+                <div class="contact-box">
+                    <span class="label">Encrypted Email</span>
+                    <a href="mailto:{{ i.Email }}" class="email-link">{{ i.Email }}</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+</body>
+</html>

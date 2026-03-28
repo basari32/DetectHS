@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UAI | Register Node</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+
+:root{
+--glass:rgba(255,255,255,0.03);
+--glass-border:rgba(255,255,255,0.08);
+--accent:#00d4ff;
+--accent-glow:rgba(0,212,255,0.2);
+--bg:#050505;
+}
+
+body{
+margin:0;
+padding:20px;
+background:var(--bg);
+color:#fff;
+font-family:'Plus Jakarta Sans',sans-serif;
+display:flex;
+align-items:center;
+justify-content:center;
+min-height:100vh;
+}
+
+.reg-container{
+width:100%;
+max-width:600px;
+padding:40px;
+background:var(--glass);
+border:1px solid var(--glass-border);
+border-radius:32px;
+backdrop-filter:blur(20px);
+box-shadow:0 20px 40px rgba(0,0,0,0.4);
+}
+
+.header-meta{
+text-align:center;
+margin-bottom:40px;
+}
+
+.header-meta span{
+font-size:0.65rem;
+letter-spacing:3px;
+color:var(--accent);
+text-transform:uppercase;
+font-weight:600;
+}
+
+.header-meta h1{
+font-size:1.8rem;
+font-weight:300;
+margin:10px 0 0 0;
+letter-spacing:-1px;
+}
+
+.form-grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:20px;
+}
+
+.full-width{
+grid-column:span 2;
+}
+
+.form-group label{
+display:block;
+font-size:0.7rem;
+color:#666;
+text-transform:uppercase;
+letter-spacing:1.5px;
+margin-bottom:8px;
+padding-left:5px;
+}
+
+input{
+width:100%;
+padding:12px 15px;
+background:rgba(255,255,255,0.05);
+border:1px solid var(--glass-border);
+border-radius:12px;
+color:#fff;
+font-family:inherit;
+box-sizing:border-box;
+transition:0.3s;
+}
+
+input:focus{
+outline:none;
+border-color:var(--accent);
+background:rgba(0,212,255,0.05);
+box-shadow:0 0 15px var(--accent-glow);
+}
+
+.radio-group{
+display:flex;
+gap:15px;
+background:rgba(255,255,255,0.03);
+padding:12px;
+border-radius:12px;
+border:1px solid var(--glass-border);
+}
+
+.radio-item{
+display:flex;
+align-items:center;
+gap:8px;
+font-size:0.85rem;
+color:#ccc;
+cursor:pointer;
+}
+
+.radio-item input{
+accent-color:var(--accent);
+}
+
+.submit-btn{
+width:100%;
+padding:16px;
+margin-top:30px;
+background:var(--accent);
+color:#000;
+border:none;
+border-radius:14px;
+font-weight:600;
+font-size:0.9rem;
+letter-spacing:1px;
+cursor:pointer;
+transition:0.3s;
+}
+
+.submit-btn:hover{
+transform:translateY(-2px);
+box-shadow:0 10px 20px var(--accent-glow);
+}
+
+.photo-preview{
+margin-top:10px;
+width:120px;
+border-radius:10px;
+border:1px solid #444;
+}
+
+@media(max-width:600px){
+.form-grid{
+grid-template-columns:1fr;
+}
+.full-width{
+grid-column:span 1;
+}
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="reg-container">
+
+<div class="header-meta">
+<span>UAI Personnel Onboarding</span>
+<h1>Initialize Node</h1>
+</div>
+
+<form action="/myapp/editauthority_post/" method="post" enctype="multipart/form-data">
+
+{% csrf_token %}
+
+<div class="form-grid">
+
+<div class="form-group full-width">
+<label>Personnel Full Name</label>
+<input type="text" name="name" value="{{data.auth_name}}" required>
+</div>
+
+<div class="form-group">
+<label>Phone / Comms</label>
+<input type="number" name="phone" value="{{data.phoneNo}}" required>
+</div>
+
+<div class="form-group">
+<label>Secure Email</label>
+<input type="email" name="email" value="{{data.Email}}" required>
+</div>
+
+<div class="form-group">
+<label>Assigned Position</label>
+<input type="text" name="position" value="{{data.position}}" required>
+</div>
+
+<div class="form-group">
+<label>Date of Birth</label>
+<input type="date" name="dob" value="{{data.dob|date:'Y-m-d'}}" required>
+</div>
+
+<div class="form-group full-width">
+
+<label>Gender Assignment</label>
+
+<div class="radio-group">
+
+<label class="radio-item">
+<input type="radio" name="gender" value="male"
+{% if data.gender == "male" %}checked{% endif %}>
+Male
+</label>
+
+<label class="radio-item">
+<input type="radio" name="gender" value="female"
+{% if data.gender == "female" %}checked{% endif %}>
+Female
+</label>
+
+<label class="radio-item">
+<input type="radio" name="gender" value="others"
+{% if data.gender == "others" %}checked{% endif %}>
+Others
+</label>
+
+</div>
+</div>
+
+<div class="form-group full-width">
+
+<label>Node Identification Photo</label>
+
+<input type="file" name="photo">
+
+{% if data.photo %}
+<img src="{{data.photo.url}}" class="photo-preview">
+{% endif %}
+
+</div>
+
+</div>
+
+<button type="submit" class="submit-btn">PROCEED WITH ONBOARDING</button>
+
+</form>
+
+</div>
+
+</body>
+</html>

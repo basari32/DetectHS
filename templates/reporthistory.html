@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UAI | Incident Archive</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --glass: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --accent: #00d4ff;
+            --bg: #050505;
+            --warning: #ffaa00;
+            --success: #00ff95;
+            --danger: #ff4d4d;
+        }
+
+        body {
+            margin: 0; padding: 40px;
+            background: var(--bg);
+            color: #fff;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .header-meta {
+            margin-bottom: 40px;
+            border-left: 3px solid var(--accent);
+            padding-left: 20px;
+        }
+
+        .header-meta h1 {
+            font-size: 2.2rem;
+            font-weight: 300;
+            margin: 0;
+            letter-spacing: -1px;
+        }
+
+        .header-meta p {
+            color: #555;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            font-size: 0.7rem;
+            margin-top: 5px;
+        }
+
+        /* Log List Layout */
+        .report-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .report-card {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 25px;
+            backdrop-filter: blur(15px);
+            transition: 0.3s ease;
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 30px;
+            align-items: start;
+        }
+
+        .report-card:hover {
+            border-color: rgba(0, 212, 255, 0.3);
+            background: rgba(255, 255, 255, 0.05);
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.5);
+        }
+
+        /* Main Info Section */
+        .info-section {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .route-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.85rem;
+            color: #ccc;
+        }
+
+        .route-node {
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .route-arrow {
+            color: var(--accent);
+            font-size: 0.7rem;
+        }
+
+        .classification {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--danger);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .reply-box {
+            background: rgba(255, 255, 255, 0.02);
+            border-left: 2px solid var(--accent);
+            padding: 15px;
+            border-radius: 0 12px 12px 0;
+            font-size: 0.85rem;
+            color: #aaa;
+            line-height: 1.5;
+        }
+
+        .reply-label {
+            display: block;
+            font-size: 0.65rem;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 5px;
+        }
+
+        /* Side Panel (Audio & Status) */
+        .media-section {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            align-items: flex-end;
+            text-align: right;
+        }
+
+        .date-stamp {
+            font-size: 0.75rem;
+            color: #555;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Dynamic Status Colors */
+        .status-pending { background: rgba(255, 170, 0, 0.1); color: var(--warning); border: 1px solid rgba(255, 170, 0, 0.2); }
+        .status-resolved { background: rgba(0, 255, 149, 0.1); color: var(--success); border: 1px solid rgba(0, 255, 149, 0.2); }
+        .status-default { background: rgba(255, 255, 255, 0.05); color: #ccc; border: 1px solid var(--glass-border); }
+
+        /* Audio Player Styling */
+        .audio-wrapper {
+            width: 100%;
+            background: #111;
+            padding: 10px;
+            border-radius: 50px;
+            border: 1px solid var(--glass-border);
+        }
+
+        audio {
+            width: 100%;
+            height: 35px;
+            outline: none;
+        }
+
+        /* Customizing the default audio player for dark mode where possible */
+        audio::-webkit-media-controls-panel {
+            background-color: #111;
+        }
+        audio::-webkit-media-controls-current-time-display,
+        audio::-webkit-media-controls-time-remaining-display {
+            color: #fff;
+        }
+
+        @media (max-width: 768px) {
+            .report-card {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            .media-section {
+                align-items: flex-start;
+                text-align: left;
+                border-top: 1px solid var(--glass-border);
+                padding-top: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header-meta">
+            <p>Intelligence Database</p>
+            <h1>Global Incident Archive</h1>
+        </div>
+
+        <div class="report-list">
+            {% for i in data %}
+            <div class="report-card">
+
+                <div class="info-section">
+                    <div class="route-info">
+                        <span class="route-node">Source: {{ i.user.name }}</span>
+                        <span class="route-arrow">➔</span>
+                        <span class="route-node">Target Node: {{ i.Authority.auth_name }}</span>
+                    </div>
+
+                    <div class="classification">
+                        {{ i.report_type }}
+                    </div>
+
+                    <div class="reply-box">
+                        <span class="reply-label">Official Dispatch Reply</span>
+                        {% if i.reply and i.reply != 'pending' %}
+                            "{{ i.reply }}"
+                        {% else %}
+                            <span style="color: #666; font-style: italic;">Awaiting authority dispatch...</span>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="media-section">
+                    <span class="date-stamp">{{ i.Date }}</span>
+
+                    {% if i.status == 'pending' %}
+                        <div class="status-badge status-pending">Status: {{ i.status }}</div>
+                    {% elif i.status == 'resolved' or i.status == 'completed' %}
+                        <div class="status-badge status-resolved">Status: {{ i.status }}</div>
+                    {% else %}
+                        <div class="status-badge status-default">Status: {{ i.status }}</div>
+                    {% endif %}
+
+                    <div class="audio-wrapper">
+                        {% if i.Audio %}
+                            <audio controls>
+                                <source src="{{ i.Audio.url }}" type="audio/mpeg">
+                                Your browser does not support the audio element.
+                            </audio>
+                        {% else %}
+                            <span style="font-size: 0.75rem; color: #555;">No Acoustic Data Attached</span>
+                        {% endif %}
+                    </div>
+                </div>
+
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+</body>
+</html>
